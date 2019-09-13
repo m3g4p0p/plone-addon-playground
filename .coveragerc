@@ -1,0 +1,6 @@
+[report]
+include =
+    src/m3g4p0p/*
+omit =
+    */test*
+    */upgrades/*

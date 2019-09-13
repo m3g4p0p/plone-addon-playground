@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layers>
+  <layer
+      name="m3g4p0p.playground"
+      interface="m3g4p0p.playground.interfaces.IM3G4P0PPlaygroundLayer"
+      />
+</layers>
