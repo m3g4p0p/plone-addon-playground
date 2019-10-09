@@ -18,4 +18,19 @@
       directory="static"
       />
 
+  <browser:page
+    name="fooview"
+    class=".views.FooView"
+    template="templates/foo.pt"
+    permission="zope2.View"
+  />
+
+  <browser:page
+    name="barview"
+    for="..interfaces.IEvent"
+    class=".views.BarView"
+    template="templates/bar.pt"
+    permission="zope2.View"
+  />
+
 </configure>
