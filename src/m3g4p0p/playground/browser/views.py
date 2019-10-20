@@ -2,6 +2,7 @@ from Acquisition import aq_inner
 from plone.app.layout.navigation.navtree import buildFolderTree, NavtreeStrategyBase
 from plone.app.layout.navigation.root import getNavigationRoot
 from Products.Five.browser import BrowserView
+from zope.interface.interfaces import ComponentLookupError
 from zope.component import getMultiAdapter
 from ..interfaces import IEvent
 from ..behaviors.megamenu import IMegaMenuContainer, IMegaMenuImages
@@ -25,11 +26,15 @@ class NodeUtil(object):
 
         return self.__context
 
-    def view(self, name):
+    def view(self, request, name):
         try:
-            view = self.context.unrestrictedTraverse('@@' + name)
-        except AttributeError:
-            raise RuntimeError('%s not found for %s' % (name, str(context)))
+            view = getMultiAdapter(
+                (aq_inner(self.context), request),
+                name=name
+            )
+
+        except ComponentLookupError:
+            raise RuntimeError('%s not found for %s' % (name, str(self.context)))
 
         return view()
 
@@ -38,21 +43,9 @@ class NodeUtil(object):
 class NavigationStrategy(NavtreeStrategyBase):
     ''' Strategy for building a navigation tree '''
 
-    def __init__(self, context):
+    def __init__(self, root_path):
         super(NavigationStrategy, self).__init__()
-        self.rootPath = getNavigationRoot(context)
-
-
-    def set_object(self, node):
-        node['obj'] = self.get_object(node)
-
-    def is_mega_menu(self, node):
-        item = self.get_object(node)
-
-        return (
-            IMegaMenuContainer.providedBy(item) and
-            item.is_mega_menu
-        )
+        self.rootPath = root_path
 
     def nodeFilter(self, node):
         return not getattr(node['item'], 'exclude_from_nav', False)
@@ -64,9 +57,6 @@ class NavigationStrategy(NavtreeStrategyBase):
 
 class NavigationView(BrowserView):
     ''' View for the navigation '''
-
-    def pretty(self):
-        return pp().pformat(self.navtree())
 
     def __populate_mega_menu(self, nodes):
         for node in nodes:
@@ -81,14 +71,17 @@ class NavigationView(BrowserView):
                 self.__populate_mega_menu(node['children'])
 
             elif is_mega_menu_item:
-                node['item_view'] = node['util'].view('megaitemview')
+                node['mega_item_view'] = node['util'].view(self.request, 'megaitemview')
 
         return nodes
 
+    def pretty(self):
+        return pp().pformat(self.navtree())
+
     def navtree(self):
-        strategy = NavigationStrategy(self.context)
-        path = getNavigationRoot(self.context)
-        query = { 'path': { 'query': path, 'depth': 2 } }
+        root_path = getNavigationRoot(self.context)
+        strategy = NavigationStrategy(root_path)
+        query = { 'path': { 'query': root_path, 'depth': 2 } }
 
         tree = buildFolderTree(
             self.context,
@@ -97,3 +90,6 @@ class NavigationView(BrowserView):
         )
 
         return self.__populate_mega_menu(tree['children'])
+
+class MegaItemView(BrowserView):
+    """ Mega Menu Item """
