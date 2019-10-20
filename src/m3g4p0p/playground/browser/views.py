@@ -41,7 +41,7 @@ class NodeUtil(object):
 
 
 class NavigationStrategy(NavtreeStrategyBase):
-    ''' Strategy for building a navigation tree '''
+    """ Strategy for building a navigation tree """
 
     def __init__(self, root_path):
         super(NavigationStrategy, self).__init__()
@@ -56,24 +56,22 @@ class NavigationStrategy(NavtreeStrategyBase):
 
 
 class NavigationView(BrowserView):
-    ''' View for the navigation '''
+    """ View for the navigation """
 
-    def __populate_mega_menu(self, nodes):
-        for node in nodes:
+    def __populate_mega_menu(self, tree):
+        for node in tree['children']:
             current_context = node['util'].context
             is_mega_menu = IMegaMenuContainer.providedBy(current_context) and current_context.is_mega_menu
-            is_mega_menu_item = not is_mega_menu and IMegaMenuImages.providedBy(current_context)
+            is_mega_item = not is_mega_menu and IMegaMenuImages.providedBy(current_context)
 
             node['is_mega_menu'] = is_mega_menu
-            node['is_mega_menu_item'] = is_mega_menu_item
+            node['is_mega_item'] = is_mega_item
 
             if is_mega_menu:
-                self.__populate_mega_menu(node['children'])
+                self.__populate_mega_menu(node)
 
-            elif is_mega_menu_item:
+            elif is_mega_item:
                 node['mega_item_view'] = node['util'].view(self.request, 'megaitemview')
-
-        return nodes
 
     def pretty(self):
         return pp().pformat(self.navtree())
@@ -89,7 +87,8 @@ class NavigationView(BrowserView):
             strategy=strategy
         )
 
-        return self.__populate_mega_menu(tree['children'])
+        self.__populate_mega_menu(tree)
+        return tree['children']
 
 class MegaItemView(BrowserView):
     """ Mega Menu Item """

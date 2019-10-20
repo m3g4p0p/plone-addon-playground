@@ -29,6 +29,7 @@
   <browser:page
     name="megaitemview"
     for="*"
+    class=".views.MegaItemView"
     template="templates/megaitem.pt"
     permission="zope2.View"
   />
