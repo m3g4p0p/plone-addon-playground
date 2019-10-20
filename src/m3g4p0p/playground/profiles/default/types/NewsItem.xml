@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<object
+  name="NewsItem"
+  meta_type="Dexterity FTI"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+
+  <property name="behaviors" purge="False">
+    <element value="m3g4p0p.playground.behaviors.megamenu.IMegaMenuImages" />
+  </property>
+
+</object>

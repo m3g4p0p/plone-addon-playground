@@ -4,9 +4,17 @@
     i18n_domain="m3g4p0p.playground">
 
   <plone:behavior
-      title="Event"
-      name="m3g4p0p.event"
-      provides="..interfaces.IEvent"
-      />
+    title="Mega Menu Images"
+    name="m3g4p0p.megamenuimages"
+    description="Manage images for the header mega menu"
+    provides=".megamenu.IMegaMenuImages"
+  />
+
+  <plone:behavior
+    title="Mega Menu Container"
+    name="m3g4p0p.megamenucontainer"
+    description="Mark container for being displayed as mega menu"
+    provides=".megamenu.IMegaMenuContainer"
+  />
 
 </configure>

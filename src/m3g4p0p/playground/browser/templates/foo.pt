@@ -6,6 +6,7 @@
   metal:use-macro="context/main_template/macros/master">
 
   <metal:block fill-slot="content-core">
+  <h1>go go go</h1>
     <ul>
       <li tal:repeat="event view/all_events" tal:content="structure event/@@barview">
 

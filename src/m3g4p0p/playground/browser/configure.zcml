@@ -19,17 +19,17 @@
       />
 
   <browser:page
-    name="fooview"
-    class=".views.FooView"
-    template="templates/foo.pt"
+    name="navigationview"
+    for="*"
+    class=".views.NavigationView"
+    template="templates/navigation.pt"
     permission="zope2.View"
   />
 
   <browser:page
-    name="barview"
-    for="..interfaces.IEvent"
-    class=".views.BarView"
-    template="templates/bar.pt"
+    name="megaitemview"
+    for="*"
+    template="templates/megaitem.pt"
     permission="zope2.View"
   />
 
