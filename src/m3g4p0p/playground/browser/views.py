@@ -22,6 +22,7 @@ class NodeUtil(object):
     @property
     def context(self):
         if self.__context is None:
+            # Lazy get and cache expensive database lookup
             self.__context = self.node['item'].getObject()
 
         return self.__context
@@ -71,6 +72,8 @@ class NavigationView(BrowserView):
                 self.__populate_mega_menu(node)
 
             elif is_mega_item:
+                adapted = IMegaMenuImages(current_context)
+                node['navigation_image'] = adapted.navigation_image
                 node['mega_item_view'] = node['util'].view(self.request, 'megaitemview')
 
     def pretty(self):

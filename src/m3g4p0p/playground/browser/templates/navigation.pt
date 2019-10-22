@@ -9,6 +9,16 @@
     <li tal:repeat="node view/navtree">
       <span tal:content="node/item/id"></span>
       <span tal:content="node/is_mega_menu"></span>
+      <ul tal:condition="node/is_mega_menu">
+        <li tal:repeat="child node/children">
+          <img
+            tal:define="
+              image nocall:child/navigation_image;
+            "
+            tal:attributes="src string:${child/util/context/absolute_url}/@@images/navigation_image"
+          >
+        </li>
+      </ul>
     </li>
   </ul>
 
